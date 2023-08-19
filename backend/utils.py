@@ -5,6 +5,7 @@ from passlib.context import CryptContext
 import os
 import time
 from typing import Dict, Union, Any
+import logging
 
 import jwt
 from dotenv import load_dotenv
@@ -19,7 +20,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30  # 30 minutes
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-print(JWT_SECRET, JWT_ALGORITHM)
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def get_hashed_password(password: str) -> str:
@@ -65,6 +68,7 @@ class JWTBearer(HTTPBearer):
                 raise ForbiddenException("Invalid authentication scheme.")
             if not self.verify_jwt(credentials.credentials):
                 raise ForbiddenException("Invalid token or expired token.")
+
             return credentials.credentials
         else:
             raise ForbiddenException("Invalid authorization code.")
@@ -77,4 +81,8 @@ class JWTBearer(HTTPBearer):
 
         return payload is not None
 
-    # get current user
+
+
+def log_user_activity(user_id: int, action: str, details: str):
+    log_message = f"User {user_id} - Action: {action} - Details: {details}"
+    logger.info(log_message)

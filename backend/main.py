@@ -2,12 +2,15 @@
 
 from fastapi import FastAPI
 
-from api import router as api_router
-from exception import NotFoundException, BadRequestException, UnauthorizedException
+from endpoints import auth, movies
+
 from database import create_db_and_tables
 
 app = FastAPI()
 
+
+app.include_router(auth.router)
+app.include_router(movies.router)
 
 @app.on_event("startup")
 def on_startup():
@@ -21,8 +24,6 @@ def read_root():
 
 
 
-
-app.include_router(api_router, prefix="/api/v1")
 
 if __name__ == "__main__":
     import uvicorn

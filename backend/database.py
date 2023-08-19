@@ -4,7 +4,7 @@ from sqlmodel import SQLModel, create_engine
 
 db_engine_url = os.getenv("DATABASE_URL", "sqlite:///database.db")
 
-engine = create_engine(db_engine_url, echo=True)
+engine = create_engine(db_engine_url, echo=False)
 
 
 # Create the database
