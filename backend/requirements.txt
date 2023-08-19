@@ -1,0 +1,8 @@
+fastapi
+sqlmodel
+uvicorn
+pyjwt
+pydantic
+python-dotenv
+requests
+cachetools
