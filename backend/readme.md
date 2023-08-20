@@ -15,7 +15,12 @@ The purpose of this project is to develop a web API that allows users to retriev
 - Implement a logging mechanism to log errors and user activities.
 
 
-## Features
+## AI Technology utilized
+During the implementation of my take-home assessment, I leveraged AI tools to streamline and enhance my development process. I utilized ChatGPT to quickly gather a general understanding of how to structure and approach the project. This helped me outline the project's key components and design.
+
+Additionally, I integrated GitHub Copilot into my Integrated Development Environment (IDE) to assist with day-to-day application development. Copilot proved valuable by offering code suggestions aligned with my logic and context, reducing the burden of remembering syntax and enabling me to focus on the core functionality.
+
+In summary, my usage of AI tools such as ChatGPT and GitHub Copilot enhanced my efficiency, provided insightful guidance, and improved the quality of my implementation for the take-home assessment project.
 
 
 ## Technologies
