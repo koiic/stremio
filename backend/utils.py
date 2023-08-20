@@ -1,4 +1,4 @@
-from fastapi import Request
+from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
 
@@ -10,22 +10,20 @@ import logging
 import jwt
 from dotenv import load_dotenv
 
-from exception import ForbiddenException
-
 load_dotenv()
 
 JWT_SECRET = os.getenv("JWT_SECRET_KEY")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = 30  # 30 minutes
 
-password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
+password_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 def get_hashed_password(password: str) -> str:
+    print(password_context, "_+++")
     return password_context.hash(password)
 
 
@@ -49,9 +47,9 @@ def create_access_token(subject: Union[str, Any]) -> Dict[str, str]:
     return token_response(token)
 
 
-def decode_token(token: str) -> Dict[str, str]:
+def decode_token(token: str, secret: str, algorithms: str) -> Dict[str, str]:
     try:
-        decoded_token = jwt.decode(token, JWT_SECRET, algorithms=JWT_ALGORITHM)
+        decoded_token = jwt.decode(token, secret, algorithms=algorithms)
         return decoded_token if decoded_token["expires"] >= time.time() else None
     except Exception as e:
         return {}
@@ -65,22 +63,21 @@ class JWTBearer(HTTPBearer):
         credentials: HTTPAuthorizationCredentials = await super(JWTBearer, self).__call__(request)
         if credentials:
             if credentials.scheme != "Bearer":
-                raise ForbiddenException("Invalid authentication scheme.")
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authentication scheme.")
             if not self.verify_jwt(credentials.credentials):
-                raise ForbiddenException("Invalid token or expired token.")
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid token or expired token.")
 
             return credentials.credentials
         else:
-            raise ForbiddenException("Invalid authorization code.")
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authorization code.")
 
     def verify_jwt(self, jwtoken: str) -> bool:
         try:
-            payload = decode_token(jwtoken)
+            payload = decode_token(jwtoken, JWT_SECRET, JWT_ALGORITHM)
         except Exception:
             payload = None
 
         return payload is not None
-
 
 
 def log_user_activity(user_id: int, action: str, details: str):
