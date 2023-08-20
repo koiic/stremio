@@ -41,14 +41,22 @@ In summary, my usage of AI tools such as ChatGPT and GitHub Copilot enhanced my 
 
    ```bash
    git clone https://github.com/koiic/stremio.git
+   
    cd stremio
+   
    create a virtual environment and activate it
+   
    example: python3 -m venv venv or virtualenv venv
     source venv/bin/activate . (linux)
     venv\Scripts\activate (windows)
+   
+   create a .env file from the .env.example file and update the values accordingly
+   
+   cd backend
+   
    pip install -r requirements.txt
    
-   create a .env file from the .env.example file and update the values
+   
     ```
 
    
@@ -66,7 +74,7 @@ Run the application:
     ```bash
    
     ```
-   you will see the logs in the terminal and you can test by visiting localhost:8000/docs.
+   you will see the logs in the terminal and you can test by navigating to 127.0.0.1:8000/docs.
    ```
   Optional - Run the tests:
 

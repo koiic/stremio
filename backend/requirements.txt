@@ -8,3 +8,4 @@ requests
 cachetools
 pytest==7.0.1
 passlib[argon2]
+pydantic[email]

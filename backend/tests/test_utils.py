@@ -2,8 +2,8 @@ import os
 
 import pytest
 from dotenv import load_dotenv
-from .. import utils as auth_util
 
+import backend.utils as auth_util
 load_dotenv()
 
 

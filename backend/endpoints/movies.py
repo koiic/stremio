@@ -8,10 +8,14 @@ from requests.adapters import HTTPAdapter, Retry
 from sqlalchemy.orm import load_only
 from sqlmodel import Session, select
 
-from database import engine
-from exception import BadRequestException
-from models import ratedMovie, User
-from utils import log_user_activity, JWTBearer, decode_token
+import sys
+
+sys.path.append("..")
+
+from backend.database import engine
+from backend.exception import BadRequestException
+from backend.models import ratedMovie, User
+from backend.utils import log_user_activity, JWTBearer, decode_token
 
 router = APIRouter(
     prefix="/movies",
@@ -29,7 +33,7 @@ ERROR_CODES = [500, 502, 403, 400, 401, 404]
 
 def get_current_user(token: str = Depends(JWTBearer())):
     try:
-        payload = decode_token(token)
+        payload = decode_token(token, os.getenv("JWT_SECRET_KEY"), os.getenv("JWT_ALGORITHM"))
         user_email = payload.get("sub")
         with Session(engine) as session:
             db_user = session.exec(select(User).where(User.email == user_email)).first()
@@ -37,7 +41,6 @@ def get_current_user(token: str = Depends(JWTBearer())):
                 raise HTTPException(status_code=403, detail="Invalid authentication credentials")
             return db_user
     except Exception as e:
-        print(e)
         raise HTTPException(status_code=403, detail="Invalid authentication credentials")
 
 

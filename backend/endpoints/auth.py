@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlmodel import Session, select
 
+from backend.models import UserCreate, UserRead, User, UserLogin, UserToken
 from database import engine
 from exception import BadRequestException
-from models import UserCreate, User, UserRead, UserToken, UserLogin
 from utils import get_hashed_password, verify_password, create_access_token, JWTBearer, decode_token, log_user_activity
 
 router = APIRouter(

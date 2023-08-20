@@ -23,7 +23,6 @@ logger = logging.getLogger(__name__)
 
 
 def get_hashed_password(password: str) -> str:
-    print(password_context, "_+++")
     return password_context.hash(password)
 
 
@@ -51,7 +50,7 @@ def decode_token(token: str, secret: str, algorithms: str) -> Dict[str, str]:
     try:
         decoded_token = jwt.decode(token, secret, algorithms=algorithms)
         return decoded_token if decoded_token["expires"] >= time.time() else None
-    except Exception as e:
+    except jwt.exceptions.InvalidTokenError as e:
         return {}
 
 
@@ -66,7 +65,6 @@ class JWTBearer(HTTPBearer):
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authentication scheme.")
             if not self.verify_jwt(credentials.credentials):
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid token or expired token.")
-
             return credentials.credentials
         else:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authorization code.")
@@ -74,7 +72,7 @@ class JWTBearer(HTTPBearer):
     def verify_jwt(self, jwtoken: str) -> bool:
         try:
             payload = decode_token(jwtoken, JWT_SECRET, JWT_ALGORITHM)
-        except Exception:
+        except Exception as e:
             payload = None
 
         return payload is not None

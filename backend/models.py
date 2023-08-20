@@ -10,7 +10,7 @@ class UserBase(SQLModel):
     email: EmailStr = Field(sa_column=Column("email", VARCHAR, unique=True))
 
 
-class User(UserBase, table=True):
+class User(UserBase, table=True, extend_existing=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     password: str
 
