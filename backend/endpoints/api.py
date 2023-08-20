@@ -1,7 +1,7 @@
 
 from fastapi import APIRouter
 
-import movies, auth
+from . import movies, auth
 
 router = APIRouter(
     prefix="/api/v1",
